@@ -100,10 +100,6 @@ foreach ($txt as $k => $v) {
 file_put_contents(OUT_FILE, $o);
 */
 
-// TO-DO:
-// 1. Check if JSON state file exists
-// 2. If not, generate it
-
 package main 
 
 import (
