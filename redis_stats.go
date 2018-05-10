@@ -5,31 +5,6 @@ is written to a text file and read by an `item` in Zabbix.
 
 /*
 
-define("STATE_FILE", "/tmp/redis_state_{$_SERVER['argv'][1]}_{$_SERVER['argv'][2]}.json");
-define("OUT_FILE", "/tmp/redis_out.text");
-
-$info = $redis->info();
-
-$out = [
-    'uptime_in_seconds' => $info['uptime_in_seconds'],
-    'used_memory' => $info['used_memory'],
-    'connected_clients' => $info['connected_clients'],
-    'instantaneous_input_kbps' => $info['instantaneous_input_kbps'],
-    'instantaneous_output_kbps' => $info['instantaneous_output_kbps'],
-    'keyspace_misses' => $info['keyspace_misses'],
-    'keyspace_hits' => $info['keyspace_hits'],
-    'expired_keys' => $info['expired_keys'],
-    'evicted_keys' => $info['evicted_keys'],
-    'read_ops' => 0,
-    'write_ops' => 0,
-    'other_ops' => 0,
-    'total_ops' => 0,
-    'read_usec' => 0,
-    'write_usec' => 0,
-    'other_usec' => 0,
-    'total_usec' => 0
-];
-
 foreach ($redis->info('COMMANDSTATS') as $cmd => $data) {
     if (!preg_match('!^calls=([0-9]+),usec=([0-9]+)!', $data, $m)) {
         continue;
@@ -141,15 +116,6 @@ import (
     "github.com/gomodule/redigo/redis"
 )
 
-// Temporarily set manual redis address (running on Docker)
-const (
-    ADDRESS = "172.17.0.2:6379"
-)
-
-// var (
-//     c, err = redis.Dial("tcp", ADDRESS)
-// )
-
 var (
     // flag vars
     host    string 
@@ -217,6 +183,18 @@ func main() {
             "total_usec":0
             }`)
 
+    /* Some of the above values can be filled by redis-cli commands
+        uptime_in_seconds
+        used_memory
+        connected_clients
+        instantaneous_input_kbps
+        instantaneous_output_kbps
+        keyspace_misses
+        keyspace_hits
+        expired_keys
+        evicted_keys
+    */
+
         corestats := CoreStats{}
         err := json.Unmarshal(jsonBlob, &corestats)
         if err != nil {
@@ -233,7 +211,6 @@ func main() {
     } else {
         fmt.Printf("File exists.\n")
     }
-
 
 }
 
